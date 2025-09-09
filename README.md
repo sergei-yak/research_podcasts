@@ -9,6 +9,8 @@ Convert research articles into high-quality audio podcasts using text-to-speech 
 - 🌍 **Multi-Language**: Supports multiple languages via Google Text-to-Speech
 - 🎙️ **Podcast Formatting**: Adds intro and proper pacing
 - ⚡ **Smart Processing**: Handles long documents by chunking text appropriately
+- 🔄 **Multiple TTS Engines**: Google TTS, local TTS, and demo mode
+- 🧪 **Demo Mode**: Create placeholder audio with tones for testing
 
 ## Installation
 
@@ -23,6 +25,15 @@ cd research_podcasts
 pip install -r requirements.txt
 ```
 
+3. (Optional) Install system dependencies for local TTS:
+```bash
+# For Ubuntu/Debian
+sudo apt-get install espeak espeak-data libespeak-dev ffmpeg
+
+# For macOS
+brew install espeak ffmpeg
+```
+
 ## Usage
 
 ### Basic Usage
@@ -32,14 +43,24 @@ Convert a research paper to audio:
 python main.py convert research_paper.pdf
 ```
 
+### Demo Mode (No Internet Required)
+
+Create a demo audio file with tones representing speech:
+```bash
+python main.py convert article.pdf --demo
+```
+
 ### Advanced Options
 
 ```bash
 # Specify output file and title
 python main.py convert article.pdf --output podcast.mp3 --title "My Research Topic"
 
-# Use different language
+# Use different language (requires internet)
 python main.py convert paper.txt --language es  # Spanish
+
+# Use local TTS instead of Google TTS
+python main.py convert document.md --local
 
 # Slow speech for better comprehension
 python main.py convert document.md --slow
@@ -59,33 +80,100 @@ python main.py info  # Show supported formats and features
 - **Text** (`.txt`) - Plain text files
 - **Markdown** (`.md`) - Markdown documents
 
+## Text-to-Speech Options
+
+### 1. Google Text-to-Speech (Default)
+- High-quality natural voices
+- Multiple language support
+- Requires internet connection
+- Automatic fallback to local TTS if unavailable
+
+### 2. Local Text-to-Speech
+- Works offline
+- Uses system TTS engine (espeak)
+- Add `--local` flag to use
+
+### 3. Demo Mode
+- Creates placeholder audio with tones
+- No TTS dependencies required
+- Perfect for testing and development
+- Add `--demo` flag to use
+
 ## Examples
 
 ```bash
-# Convert a PDF research paper
+# Convert a PDF research paper (default: Google TTS)
 python main.py convert "Neural Networks in AI.pdf"
 
 # Convert with custom title and output
 python main.py convert research.txt -o my_podcast.mp3 -t "AI Research Overview"
 
-# Convert in Spanish
+# Convert in Spanish using Google TTS
 python main.py convert articulo.pdf --language es
+
+# Use local TTS (offline)
+python main.py convert paper.md --local --slow
+
+# Demo mode for testing
+python main.py convert document.txt --demo
 ```
+
+## Output
+
+The converter generates:
+- **MP3 audio file**: High-quality podcast audio
+- **Transcript file** (demo mode): Text content with metadata
 
 ## Requirements
 
 - Python 3.8+
-- Internet connection (for Google Text-to-Speech)
-- ffmpeg (automatically installed with pydub)
+- Internet connection (for Google TTS)
+- ffmpeg (automatically handled by pydub)
+- espeak (optional, for local TTS)
 
 ## How It Works
 
 1. **Text Extraction**: Extracts text from PDFs using advanced parsing
 2. **Text Processing**: Chunks long texts for optimal TTS processing
-3. **Audio Generation**: Converts text to speech using Google TTS
+3. **Audio Generation**: Converts text to speech using selected TTS engine
 4. **Post-Processing**: Normalizes audio and adds proper podcast formatting
 5. **Output**: Saves as high-quality MP3 file
+
+## Development
+
+### Running Tests
+
+```bash
+python -m unittest tests.test_converter -v
+```
+
+### Example Script
+
+Run the example script to see the converter in action:
+
+```bash
+python example.py
+```
+
+## Troubleshooting
+
+### Google TTS Issues
+- Check internet connection
+- Try using `--local` flag for offline conversion
+- Use `--demo` flag for testing without TTS
+
+### Local TTS Issues
+- Install espeak: `sudo apt-get install espeak espeak-data`
+- Try demo mode: `--demo` flag
+
+### Audio Issues
+- Ensure ffmpeg is installed
+- Check output directory permissions
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License.
